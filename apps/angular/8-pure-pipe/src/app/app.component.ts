@@ -1,20 +1,26 @@
 import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'myPipe',
+  standalone: true,
+})
+export class MyPipePipe implements PipeTransform {
+  transform(value: string, index: number) {
+    return `${value} - ${index}`;
+  }
+}
 
 @Component({
-  imports: [NgFor],
+  imports: [NgFor, MyPipePipe],
   selector: 'app-root',
   template: `
     <div *ngFor="let person of persons; let index = index">
-      {{ heavyComputation(person, index) }}
+      {{ person | myPipe: index }}
     </div>
   `,
+  standalone: true,
 })
 export class AppComponent {
   persons = ['toto', 'jack'];
-
-  heavyComputation(name: string, index: number) {
-    // very heavy computation
-    return `${name} - ${index}`;
-  }
 }
