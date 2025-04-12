@@ -18,6 +18,7 @@ import { RouterLink, RouterModule } from '@angular/router';
     <button routerLink="/">HOME</button>
     <router-outlet></router-outlet>
   `,
+  standalone: true,
 })
 export class AppComponent {
   userName = new FormControl();
