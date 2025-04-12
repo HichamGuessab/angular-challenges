@@ -5,5 +5,6 @@ import { Component } from '@angular/core';
   template: `
     <div>Home</div>
   `,
+  standalone: true,
 })
 export default class HomeComponent {}
