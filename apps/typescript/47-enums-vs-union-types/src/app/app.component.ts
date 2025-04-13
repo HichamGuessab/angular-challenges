@@ -1,14 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 
-enum Difficulty {
-  EASY = 'easy',
-  NORMAL = 'normal',
-}
-
-enum Direction {
-  LEFT = 'left',
-  RIGHT = 'right',
-}
+type Difficulty = 'Easy' | 'Normal';
+type Direction = 'Left' | 'Right';
 
 @Component({
   imports: [],
@@ -16,10 +9,10 @@ enum Direction {
   template: `
     <section>
       <div>
-        <button mat-stroked-button (click)="difficulty.set(Difficulty.EASY)">
+        <button mat-stroked-button (click)="difficulty.set('Easy')">
           Easy
         </button>
-        <button mat-stroked-button (click)="difficulty.set(Difficulty.NORMAL)">
+        <button mat-stroked-button (click)="difficulty.set('Normal')">
           Normal
         </button>
       </div>
@@ -28,10 +21,8 @@ enum Direction {
 
     <section>
       <div>
-        <button mat-stroked-button (click)="direction.set(Direction.LEFT)">
-          Left
-        </button>
-        <button mat-stroked-button (click)="direction.set(Direction.RIGHT)">
+        <button mat-stroked-button (click)="direction.set('Left')">Left</button>
+        <button mat-stroked-button (click)="direction.set('Right')">
           Right
         </button>
       </div>
@@ -51,32 +42,19 @@ enum Direction {
       @apply rounded-md border px-4 py-2;
     }
   `,
+  standalone: true,
 })
 export class AppComponent {
-  readonly Difficulty = Difficulty;
-  readonly difficulty = signal<Difficulty>(Difficulty.EASY);
-
-  readonly Direction = Direction;
+  readonly difficulty = signal<Difficulty>('Easy');
   readonly direction = signal<Direction | undefined>(undefined);
 
   readonly difficultyLabel = computed<string>(() => {
-    switch (this.difficulty()) {
-      case Difficulty.EASY:
-        return Difficulty.EASY;
-      case Difficulty.NORMAL:
-        return Difficulty.NORMAL;
-    }
+    return this.difficulty().toString().toUpperCase();
   });
 
   readonly directionLabel = computed<string>(() => {
-    const prefix = 'You chose to go';
-    switch (this.direction()) {
-      case Direction.LEFT:
-        return `${prefix} ${Direction.LEFT}`;
-      case Direction.RIGHT:
-        return `${prefix} ${Direction.RIGHT}`;
-      default:
-        return 'Choose a direction!';
-    }
+    return this.direction()
+      ? `You chose to go ${this.direction()?.toString().toUpperCase()}`
+      : 'Choose a direction!';
   });
 }
