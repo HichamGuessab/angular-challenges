@@ -1,1 +1,1 @@
-export * from './lib/forbidden.module';
+export { FORBIDDEN_ROUTES } from './lib/forbidden.routes';
