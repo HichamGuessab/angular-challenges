@@ -1,0 +1,11 @@
+@if (loading()) {
+  <mat-spinner mode="indeterminate" value="10"></mat-spinner>
+} @else {
+  @for (todo of todos(); track todo.id) {
+    <div class="flex ">
+      {{ todo.title }}
+      <button (click)="update(todo)">Update</button>
+      <button (click)="delete(todo)">Delete</button>
+    </div>
+  }
+}

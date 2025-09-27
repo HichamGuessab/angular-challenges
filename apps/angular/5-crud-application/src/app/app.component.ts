@@ -1,49 +1,41 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { randText } from '@ngneat/falso';
+import { TodoApiModel } from './todo.api/todo.api.model';
+import { TodoStore } from './todo.store';
 
 @Component({
-  imports: [],
+  standalone: true,
+  imports: [MatProgressSpinnerModule],
   selector: 'app-root',
-  template: `
-    @for (todo of todos; track todo.id) {
-      {{ todo.title }}
-      <button (click)="update(todo)">Update</button>
-    }
-  `,
+  templateUrl: 'app.component.html',
   styles: [],
+  providers: [TodoStore],
 })
 export class AppComponent implements OnInit {
-  private http = inject(HttpClient);
+  /** Injects **/
+  readonly todoStore = inject(TodoStore);
 
-  todos!: any[];
+  /** Signals **/
+  todos = this.todoStore.todos;
+  loading = this.todoStore.loading;
 
-  ngOnInit(): void {
-    this.http
-      .get<any[]>('https://jsonplaceholder.typicode.com/todos')
-      .subscribe((todos) => {
-        this.todos = todos;
-      });
+  /** LifeCycle **/
+  ngOnInit() {
+    this.getAll();
   }
 
-  update(todo: any) {
-    this.http
-      .put<any>(
-        `https://jsonplaceholder.typicode.com/todos/${todo.id}`,
-        JSON.stringify({
-          todo: todo.id,
-          title: randText(),
-          body: todo.body,
-          userId: todo.userId,
-        }),
-        {
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-        },
-      )
-      .subscribe((todoUpdated: any) => {
-        this.todos[todoUpdated.id - 1] = todoUpdated;
-      });
+  /** Public methods **/
+  update(todo: TodoApiModel, title: string = randText()) {
+    this.todoStore.update(todo, title);
+  }
+
+  delete(todo: TodoApiModel) {
+    this.todoStore.delete(todo);
+  }
+
+  /** Private methods **/
+  private getAll() {
+    this.todoStore.loadAll();
   }
 }
