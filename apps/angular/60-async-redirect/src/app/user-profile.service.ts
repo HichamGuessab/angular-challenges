@@ -4,10 +4,13 @@ import { delay } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
-  private profile = signal<'admin' | 'user'>('admin');
+  private profile = signal<'admin' | 'user'>(
+    (localStorage.getItem('role') as 'admin' | 'user') ?? 'user',
+  );
 
   setProfile(profile: 'admin' | 'user') {
     this.profile.set(profile);
+    localStorage.setItem('role', profile);
   }
 
   getProfile(): Observable<'admin' | 'user'> {
